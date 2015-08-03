@@ -1,0 +1,276 @@
+package package1;
+
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
+
+public class SimpleDatabase {
+	private LinkedList<Student> database;
+	
+	public SimpleDatabase(){
+		/** is the linked list that is manipulated */
+		database = new LinkedList<Student>();
+		
+	}
+	/*****************************************************************
+	 * returns the database we manipulate, mainly used for JUnit Testing
+	 * @returns the linkedlist this class uses
+	 *****************************************************************/
+	public LinkedList<Student> getDatabase(){
+		return database;
+	}
+	
+	public SimpleDatabase(LinkedList<Student> baseOfData){
+		database = baseOfData;
+	}
+	
+	/******************************************************************
+	 * changes the sort and attempts to do it, while stating which sort
+	 * it tried to change it to
+	 * @param x = 1 for name, 2 for Gnumber, 3 for GPA
+	 * @return the result of the sort, if it worked or not
+	 *****************************************************************/
+	public String sort(int x){
+		try{
+		sortDatabase(x);
+		}
+		catch(Exception e){
+			return "error sorting\n";
+		}
+		switch(Student.getSortNumber()){
+		case 1: return "sorted by Name\n";
+		case 2: return "sorted by GNumber\n";
+		case 3: return "sorted by GPA\n";
+		default: return "failed to sort\n";
+		}
+	}
+	/******************************************************************
+	 *private helper method which further calls the linked list to sort
+	 *the sorting method is within the Simpledatabase class and not the
+	 *Linked List class because LinkedList is of generic type E and E is 
+	 *a hard thing to sort.
+	 *
+	 *The method of sorting dumps it into an arrayList and then sorts
+	 *that through the Collections method, then puts it back into a 
+	 *Linked List. This seems like a kinda bad idea however the API for
+	 *the collections.sort method said it any sortable data and puts it
+	 *into an array and sorts it and sends it back.
+	 *****************************************************************/
+	private void sortDatabase(int x){
+		Student.switchSorts(x);
+		ArrayList<Student> sortsies = new ArrayList<Student>();
+		if(database.getTop() == null)
+			throw new NullPointerException();
+		if(database.getTop().getNext() == null)
+			return;
+		for(Node<Student> temp = database.getTop(); temp != null; 
+				                                 temp = temp.getNext()){
+			sortsies.add(temp.getData());
+		}
+		Collections.sort(sortsies);
+		int index = 0;
+		for(Node<Student> temp = database.getTop(); temp != null;
+				                                 temp = temp.getNext()){
+			temp.setData(sortsies.get(index++));
+		}
+	}
+	/******************************************************************
+	 * adds the student at the top
+	 * @param stud is the information to be added
+	 * @return a string telling the results
+	 *****************************************************************/
+	public String addAtTop(Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		if(database.addAtTop(stud))
+			return "student " + stud.getName() + " added at top\n";
+		else
+			return "Couldn't add entry\n";
+	}
+	
+	/******************************************************************
+	 * adds the student at the bottom
+	 * @param stud is the information to be added
+	 * @return a string telling the results
+	 *****************************************************************/
+	public String addAtBottom(Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		try{
+		if(database.addAtBottom(stud))
+			return "student " + stud.getName() + " added at bottom\n";
+		else
+			return "Couldn't add entry\n";
+		}
+		catch (Exception e){
+			return "please validate inputs\n";
+		}
+	}
+	
+	/******************************************************************
+	 * adds the student at before the mentioned student
+	 * @param stud is the information to be added
+	 * @return a string telling the results
+	 *****************************************************************/
+	public String addBeforeNode(Student e, Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		try {
+			if (database.addBeforeNode(e, stud))
+				return "student " + stud.getName() + " was added " 
+				+ "before " + e.getName() + "\n";
+			else
+				return "Couldn't add entry\n";
+		} catch (Exception e1) {
+			return "please validate inputs\n";
+		}
+	}
+	
+	/******************************************************************
+	 * adds the student at after the mentioned student
+	 * @param stud is the information to be added
+	 * @return a string telling the results
+	 *****************************************************************/
+	public String addAfterNode(Student e, Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		try {
+			if(database.addAfterNode(e, stud))
+				return "student " + stud.getName() + " was added " 
+						+ " after " + e.getName() + "\n";
+			else
+				return "Couldn't add entry\n";
+		} catch (Exception e1) {
+			return "please validate inputs\n";
+		}
+	}
+	
+	/*******************************************************************
+	 * tells if the information of student is within the linked list
+	 * @param stud is the information we're checking
+	 * @return a string based on the result
+	 ******************************************************************/
+	public String findStudent(Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		try {
+			if(database.findNode(stud) != null)
+				return "student " + stud.getgNumber() + " is in the "
+						+ "database\n";
+			else
+				return "Couldn't find student " + stud.getgNumber()+"\n";
+		} catch (Exception e) {
+			return "please validate inputs\n";
+		}
+	}
+	
+	/*****************************************************************
+	 * updates a text on whether or not information can be deleted from
+	 * the linked list database
+	 * @param stud is the information to be deleted from the LL
+	 * @return a string based on the result of what happened
+	 ****************************************************************/
+	public String deleteStudent(Student stud){
+		if(stud == null)
+			return "stud was null\n";
+		try{
+		if(database.deleteNode(stud))
+			return stud.getName() + " has been deleted\n";
+		else
+			return "Couldn't delete " + stud.getName() + "\n";
+		}
+		catch (Exception e){
+			return "please validate inputs\n";
+		}
+	}
+	
+	/******************************************************************
+	 * uses the datbase to delete any duplicated GNumbers and reports
+	 * back if it did, how many it deleted.
+	 * @return a string based on the result
+	 *****************************************************************/
+	public String deleteDuplicates(){
+		int deleted = database.deleteDuplicates();
+		if(deleted > 0)
+			return "deleted " + deleted + " duplicates\n";
+		else
+			return  "no duplicates were found\n";
+	}
+	
+	/****************************************************************
+	 * tries telling the LinkedList to reverse all of its pointers
+	 * @return a string based on the result
+	 ****************************************************************/
+	public String reverseList(){
+		try{
+			if (database.reverseList())
+				return "list Reversed\n";
+			else
+				return "couldn't reverse list\n";
+		}
+		catch(Exception e){
+			return "error reversing list\n";
+		}
+	}
+	
+	/****************************************************************
+	 * update is Student specific and therefore in the Simpledatabase 
+	 * class, as GNumber can not be updated but is stored in the same
+	 * generic
+	 * @param stud is the information to be updated
+	 * @return a string based on the result
+	 ***************************************************************/
+	public String Update(Student stud){
+		if(stud == null)
+			return "Couldn't find student\n";
+		if(database.findNode(stud) == null)
+			return "Student not in database\n";
+		Node<Student> temp = database.findNode(stud);
+		temp.getData().setName(stud.getName());
+		temp.getData().setGpa(stud.getGpa());
+		return "Updated Student #: " + stud.getgNumber() + "\n";
+	}
+	
+	/*****************************************************************
+	 * tells the database to save itself at the location
+	 * @param filename is the filename to be saved
+	 * @return that its been saved
+	 ****************************************************************/
+	public String saveDatabase(String filename){
+		try{database.saveDatabase(filename);
+		return "database saved\n";
+		}
+		catch(Exception e){
+			return "oops";
+		}
+	}
+	
+	/*****************************************************************
+	 * tells the database to load a new linked list
+	 * @param filename is the location of the new file
+	 * @return that its been loaded
+	 ****************************************************************/
+	public String loadDatabase(String filename){
+		try{
+		database.loadDatabase(filename);
+		return "database loaded\n";
+		}
+		catch(Exception e){
+			return "oops";
+		}
+	}
+	
+	
+	/*****************************************************************
+	 * is the toString method
+	 ****************************************************************/
+	public String toString(){
+		try{
+		return database.toString();
+		}
+		catch(Exception e){
+			return "no list\n";
+		}
+	}
+}
