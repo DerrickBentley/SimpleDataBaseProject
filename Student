@@ -1,0 +1,112 @@
+package package1;
+
+import java.io.Serializable;
+
+public class Student implements Comparable<Student>, Serializable{
+	private static final long serialVersionUID = 1L;
+	/** Name of the student */
+	private String name;
+	/** gNumber of the Student */
+	private int gNumber;
+	/** is the gpa of the Student */
+	private double gpa;
+	/** enum type for going through which sorts */
+	private static enum sort{one, two, three};
+	private static sort please = sort.one;
+
+	public Student(){
+		name = "";
+		gNumber = -1;
+		gpa = -1;
+	}
+
+	public Student(String name, int gNumber, double gpa){
+		this.name = name;
+		this.gNumber = gNumber;
+		this.gpa = gpa;
+	}
+
+	/*****************************************************************
+	 * used to convert integers into the one of the 3 types my Enum can
+	 * be. Used in the sorting method for different sorts
+	 * @param ex 1 for name, 2 for gnumber, 3 for gpa
+	 *****************************************************************/
+	public static void switchSorts(int ex){
+		switch (ex){
+		case 1: please = sort.one;
+		break;
+		case 2: please = sort.two;
+		break;
+		case 3: please = sort.three;
+		break;
+		default: break;
+		}
+	}
+
+	/*****************************************************************
+	 * returns which enum type we are going to sort by 
+	 * @return 1 for name 2 for gnumber 3 for gpa
+	 *****************************************************************/
+	public static int getSortNumber(){
+		switch(please){
+		case one: return 1;
+		case two: return 2;
+		case three: return 3;
+		default: return 0;
+		}
+	}
+
+	/******************************************************************
+	 * The gNumber is the unique identifier of the student class
+	 ****************************************************************/
+	@Override
+	public boolean equals(Object stud){
+		return (this.gNumber == (((Student) stud).getgNumber()));
+	}
+
+	/*****************************************************************
+	 * basic formatting for the student
+	 *****************************************************************/
+	@Override
+	public String toString(){
+		return name + " " + gNumber + " " + gpa + "\n";
+	}
+
+	/******************************************************************
+	 * used in Collections.sort to sort the linkedList, but which 
+	 * enumerated type is currently set.
+	 *****************************************************************/
+	@Override
+	public int compareTo(Student arg0) {
+		switch(please){
+		case one: return this.getName().compareToIgnoreCase
+				(arg0.getName()) >= 0 ? 1 : -1;
+		case two: return this.getgNumber() >= arg0.getgNumber() ? 1 :-1;
+		case three: return this.getGpa() >= arg0.getGpa() ? 1 : -1;
+		default: return 0;
+		}
+	}
+
+	/**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**
+	 * Unaltered getters and setters
+	 **--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**--**/
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getgNumber() {
+		return gNumber;
+	}
+	public void setgNumber(int gNumber) {
+		this.gNumber = gNumber;
+	}
+	public double getGpa() {
+		return gpa;
+	}
+	public void setGpa(double gpa) {
+		this.gpa = gpa;
+	}
+
+}
