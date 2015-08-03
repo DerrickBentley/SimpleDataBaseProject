@@ -1,0 +1,321 @@
+package package1;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class LinkedList<E> implements Serializable {
+	private static final long serialVersionUID = 1L;
+	/** is the top of the linked list */
+	private Node<E> top;
+	/** is the bottom of the linked list */
+	private Node<E> bottom;
+	/** is the number of nodes in the list */
+	private int count;
+	 
+	/*****************************************************************
+	 * gets the top
+	 * @return top
+	 ****************************************************************/
+	public Node<E> getTop(){
+		return top;
+	}
+	
+	/*****************************************************************
+	 * gets the bottom
+	 * @return bottom
+	 ****************************************************************/
+	public Node<E> getBottom(){
+		return bottom;
+	}
+	
+	public LinkedList(){
+		top = null;
+		bottom = null;
+		count = 0;
+	}
+	
+	/******************************************************************
+	 * Adds a new Node of the data send in to the very top of the list
+	 * @param please is the data to be set to the node created
+	 * @return true it worked
+	 *****************************************************************/
+	public boolean addAtTop(E please){
+		//no data
+		if (please == null)
+			return false;
+		//no list
+		if(top == null){
+			top = bottom = new Node<E>(null, null, please);
+			count++;
+			return true;
+		}
+		//There is a list, covers all other cases.
+		top.setPrev(new Node<E>(null, top, please));
+		top = top.getPrev();
+		count++;
+		return true;
+	}
+	
+	/*****************************************************************
+	 * Adds a new Node of the data sent in to the bottom of the list
+	 * @param please is the data sent in.
+	 * @return true if it worked
+	 ****************************************************************/
+	public boolean addAtBottom(E please){
+		//no data
+		if(please == null)
+			return false;
+		//no list
+		if(top == null){
+			 bottom = top = new Node<E>(null, null, please);
+			 count++;
+			return true;
+		}
+		//there is a list, add one to the bottom, change bottom to it.
+		bottom.setNext(new Node<E>(bottom, null, please));
+		bottom = bottom.getNext();
+		count++;
+		return true;
+	}
+	
+	/*****************************************************************
+	 * Give the data you want the node to appear Before in the list,
+	 * tries to find that node, and will create a new node before it
+	 * @param before is the information you want after the new info
+	 * @param please is the information you want before the old info
+	 * @return true if it worked
+	 ****************************************************************/
+	public boolean addBeforeNode(E before, E please) {
+		//didn't pass it a node to put before
+		if(before == null)
+			return false;
+		//if its not in the list.
+		if(findNode(before) == null)
+			return false;
+		Node<E> temp = findNode(before);
+		//case if its at the top
+		if(temp == top){
+			temp.setPrev(new Node<E>(null, temp, please));
+			top = temp.getPrev();
+			count++;
+			return true;
+		}
+		//if it exists, and is in the list, we'll do it.
+		Node<E>newNode = new Node<E>(temp.getPrev(), temp, please);
+		temp.getPrev().setNext(newNode);
+		temp.setPrev(newNode);
+		count++;
+		return true;
+	}
+	
+	/******************************************************************
+	 * Adds a new Node After the given data you enter, if its in the 
+	 * list.
+	 * @param after is the node you want to find to put the info after.
+	 * @param please is the new information you want to add
+	 * @return true if it worked
+	 *****************************************************************/
+	public boolean addAfterNode(E after, E please) {
+		//no list
+		if(after == null)
+			return false;
+		//if its not in the list
+		if(findNode(after) == null)
+			return false;
+		Node<E> temp = findNode(after);
+		//case if its at the bottom
+		if(temp == bottom){
+			temp.setNext(new Node<E>(temp, null, please));
+			bottom = temp.getNext();
+			count++;
+			return true;
+		}
+		temp.setNext(new Node<E>(temp, temp.getNext(), please));
+		count++;
+		return true;
+	}
+	
+	/*****************************************************************
+	 * Is both a helper method for other methods as well as can serve
+	 * a basic functionality for any users using the linked list, tells
+	 * if the information passed in is in the list or not
+	 * @param please is the information your checking
+	 * @return The Node if it is found, or null if it is not.
+	 ****************************************************************/
+	public Node<E> findNode(E please) {
+		//no list
+		if(top == null)
+			return null;
+		//if it finds the node in the list, returns it.
+		for(Node<E> temp = top; temp != null; temp = temp.getNext()){
+			if(temp.getData().equals(please)) 
+				return temp;
+		}
+		return null;
+	}
+	
+	/*****************************************************************
+	 * Basic swap function to help sorting If i get to the point where 
+	 * I need to make the undo button work for sorts.
+	 * @param first is the first node we are switching with.
+	 * @param second is the second node we are switching with.
+	 *****************************************************************/
+	public void swap(Node<E> first, Node<E> second){
+		E temp = first.getData();
+		first.setData(second.getData());
+		second.setData(temp);
+	}
+	
+	/*****************************************************************
+	 * removes other pointers from pointing to a Node with this data, 
+	 * removing it from the list.
+	 * @param please is the information we want to find to remove
+	 * @return true if it worked
+	 ****************************************************************/
+	public boolean deleteNode(E please){
+		try{
+			// no information passed
+			if(findNode(please) == null)
+				return false;
+			Node<E> temp = findNode(please);
+			//case where at top
+			if(temp == top){
+				top = temp.getNext();
+				if(top != null)
+					top.setPrev(null);
+				count--;
+				return true;
+		}
+			//case where at bottom
+			if(temp == bottom){
+				bottom = temp.getPrev();
+				if(bottom != null)
+					bottom.setNext(null);
+				count--;
+				return true;
+		}
+			//case in middle
+			temp.getPrev().setNext(temp.getNext());
+			temp.getNext().setPrev(temp.getPrev());
+			count--;
+			return true;
+		}
+		catch (Exception e){
+			return false;
+		}
+	}
+	/******************************************************************
+	 * for each Node, takes the data, and if it finds it elsewhere in 
+	 * the list, it will delete it and increment the counter.
+	 * @return the counter, telling how many duplicates were deleted
+	 *****************************************************************/
+	public int deleteDuplicates(){
+		int totalDeleted = 0;
+		//going through the whole list
+		for(Node<E> temp = top; temp != null; temp = temp.getNext()){
+			int currStudent = 0;
+		   for(Node<E> dups = top; dups != null; dups = dups.getNext()){
+				//if it find it more than once, we delete it
+			   if(currStudent >= 1 && dups.getData().equals
+					                                  (temp.getData())){
+					deleteNode(dups.getData());
+					totalDeleted++;
+				}
+				//going through we should find the data atleast once
+				if(dups.equals(temp))
+					currStudent++;
+			}
+		}
+		//the total duplicates deleted
+		return totalDeleted;
+	}
+	
+	/******************************************************************
+	 * switches all the pointers with each other to make the go backwards
+	 * this is different from merely swapping all of the data with one
+	 * another
+	 * @return true if it was reversed
+	 *****************************************************************/
+	public boolean reverseList(){
+		if(top == null)
+			throw new NullPointerException();
+		if (top.getNext() == null)
+			return true;
+		for(Node<E> temp = top; temp != null; temp = temp.getPrev()){
+			Node<E> momentarily = temp.getNext();
+			temp.setNext(temp.getPrev());
+			temp.setPrev(momentarily);
+		}
+		Node<E> temp = top;
+		top = bottom;
+		bottom = temp;
+		return true;	
+	}
+	
+
+	 /*****************************************************************
+	  * writes our linkedList into a serialized file for our keeping.
+	  * @param filename is the location to be saved
+	  ****************************************************************/
+	public void saveDatabase(String filename) {
+		try {
+			FileOutputStream fos = new FileOutputStream(filename);
+			ObjectOutputStream os = new ObjectOutputStream(fos);
+			os.writeInt(getSize());
+			for(Node<E> temp = top; temp != null;temp = temp.getNext()){
+				os.writeObject(temp.getData());
+			}
+			//os.writeObject(top);
+			os.close();
+			} 
+		catch (IOException ex) {
+		}
+	}
+	/******************************************************************
+	 * loads a serialized file into our linkedList from a stored
+	 * database.
+	 * @param filename is the location we are loading from.
+	 *****************************************************************/
+	public void loadDatabase(String filename) {
+		try {
+			//sets it to blank beforehand
+			top = bottom = null;
+			FileInputStream fis = new FileInputStream(filename);
+			ObjectInputStream is = new ObjectInputStream(fis);
+			int length = is.readInt();
+			while(length != 0){
+				addAtBottom((E)is.readObject());
+			}
+			is.close();
+		} catch (Exception ex) {
+		}
+	}
+	
+	/*****************************************************************
+	 * overrides the toString to display the whole database.
+	 *****************************************************************/
+	public String toString(){
+		if(top == null)
+			throw new NullPointerException();
+		Node<E> temp  = top;
+		String result = "";
+		while(temp != null){
+			result += temp.getData().toString();
+			temp = temp.getNext();
+		}
+		return result;
+	}
+	
+	/*****************************************************************
+	 * returns the counter, which is keeping track of nodes
+	 * @return number of nodes
+	 *****************************************************************/
+	public int getSize(){
+		return count;
+	}
+
+}
