@@ -1,0 +1,193 @@
+package package1;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+public class SimpleDatabasePanel extends JPanel {
+	JMenuBar menubar;
+	JMenu fileMenu;
+	JMenuItem saveDatabase;
+	JMenuItem loadDatabase;
+	JPanel inputPanel;
+	JPanel buttonPanel;
+	JLabel lblName;
+	JLabel lblGNumber;
+	JLabel lblGpa;
+	JTextField txtName;
+	JTextField txtGNumber;
+	JTextField txtGpa;
+	JButton btnInsert;
+	JButton btnFind;
+	JButton btnDuplicate;
+	JButton btnDelete;
+	JButton btnReverse;
+	JButton btnDisplay;
+	JButton btnSortName;
+	JButton btnSortGNumber;
+	JButton btnSortGPA;
+	JButton btnUpdate;
+	JButton btnSave;
+	JButton btnLoad;
+	
+	JTextArea txtArea;
+	
+	private JFileChooser chooser = new JFileChooser();
+	private int returnVal;
+	
+	static SimpleDatabase database;
+	
+	SimpleDatabasePanel(){
+		GridLayout experimentLayout = new GridLayout(0,2);
+		database = new SimpleDatabase();
+		this.setLayout(new BorderLayout());
+		ButtonListener buttonListener = new ButtonListener();
+		menubar = new JMenuBar();
+		fileMenu = new JMenu("file");
+		saveDatabase = new JMenuItem("save");
+		loadDatabase = new JMenuItem("load");
+		fileMenu.add(saveDatabase);
+		fileMenu.add(loadDatabase);
+		menubar.add(fileMenu);
+		this.add(menubar, BorderLayout.NORTH);
+		
+		lblName = new JLabel("Student Name : ");
+		lblGNumber = new JLabel("Student Number : ");
+		lblGpa = new JLabel("Student GPA : ");
+		txtName = new JTextField();
+		txtGNumber = new JTextField();
+		txtGpa = new JTextField();
+		
+		inputPanel = new JPanel();
+		inputPanel.setLayout(experimentLayout);
+		inputPanel.add(lblName);
+		inputPanel.add(txtName);
+		inputPanel.add(lblGNumber);
+		inputPanel.add(txtGNumber);
+		inputPanel.add(lblGpa);
+		inputPanel.add(txtGpa);
+		
+		this.add(inputPanel, BorderLayout.WEST);
+		btnInsert = new JButton("insert");
+		btnFind = new JButton("find");
+		btnDuplicate = new JButton("duplicates");
+		btnDelete = new JButton("delete");
+		btnReverse = new JButton("reverse");
+		btnDisplay = new JButton("display");
+		btnSortName = new JButton("Sort by Name");
+		btnSortGNumber = new JButton("Sort by GNumber");
+		btnSortGPA = new JButton("Sort by GPA");
+		btnUpdate = new JButton("Update");
+		btnSave = new JButton("Save");
+		btnLoad = new JButton("Load");
+		
+		btnInsert.addActionListener(buttonListener);
+		btnFind.addActionListener(buttonListener);
+		btnDuplicate.addActionListener(buttonListener);
+		btnDelete.addActionListener(buttonListener);
+		btnReverse.addActionListener(buttonListener);
+		btnDisplay.addActionListener(buttonListener);
+		btnSortName.addActionListener(buttonListener);
+		btnSortGNumber.addActionListener(buttonListener);
+		btnSortGPA.addActionListener(buttonListener);
+		btnUpdate.addActionListener(buttonListener);
+		btnSave.addActionListener(buttonListener);
+		btnLoad.addActionListener(buttonListener);
+		
+		buttonPanel = new JPanel();
+		buttonPanel.setLayout(experimentLayout);
+		buttonPanel.add(btnInsert);
+		buttonPanel.add(btnFind);
+		buttonPanel.add(btnDuplicate);
+		buttonPanel.add(btnDelete);
+		buttonPanel.add(btnReverse);
+		buttonPanel.add(btnDisplay);
+		buttonPanel.add(btnSortName);
+		buttonPanel.add(btnSortGNumber);
+		buttonPanel.add(btnSortGPA);
+		buttonPanel.add(btnUpdate);
+		buttonPanel.add(btnSave);
+		buttonPanel.add(btnLoad);
+		
+		this.add(buttonPanel, BorderLayout.EAST);
+		
+		txtArea = new JTextArea(20, 10);
+		JScrollPane scrollPane = new JScrollPane(txtArea);
+		this.add(scrollPane, BorderLayout.SOUTH);
+		
+		
+	}
+	
+	private class ButtonListener implements ActionListener{
+
+		public void actionPerformed(ActionEvent event){
+			
+			if(event.getSource() == btnInsert)
+				txtArea.append(database.addAtBottom(getStudent()));
+			if(event.getSource() == btnFind)
+				txtArea.append(database.findStudent(getStudent()));
+			if(event.getSource() == btnDelete)
+				txtArea.append(database.deleteStudent(getStudent()));
+			if(event.getSource() == btnDisplay)
+				txtArea.append(database.toString());
+			if(event.getSource() == btnDuplicate)
+				txtArea.append(database.deleteDuplicates());
+			if(event.getSource() == btnReverse)
+				txtArea.append(database.reverseList());
+			if(event.getSource() == btnSortName)
+				txtArea.append(database.sort(1));
+			if(event.getSource() == btnSortGNumber)
+				txtArea.append(database.sort(2));
+			if(event.getSource() == btnSortGPA)
+				txtArea.append(database.sort(3));
+			if(event.getSource() == btnUpdate)
+				txtArea.append(database.Update(getStudent()));
+			if(event.getSource() == btnSave){
+				returnVal = chooser.showSaveDialog(new JFrame());
+			    if(returnVal == JFileChooser.APPROVE_OPTION)
+				txtArea.append(database.saveDatabase(chooser
+						                 .getSelectedFile().getName()));
+			}
+			if(event.getSource() == btnLoad){
+				returnVal = chooser.showOpenDialog(new JFrame());
+			    if(returnVal == JFileChooser.APPROVE_OPTION)
+				txtArea.append(database.loadDatabase(chooser
+						                 .getSelectedFile().getName()));
+			}
+		}
+		
+		private Student getStudent(){
+			try{
+			Student temp = new Student(txtName.getText(), Integer.
+					parseInt(txtGNumber.getText()), Double.parseDouble
+					                                (txtGpa.getText()));
+			return temp;
+			}
+			catch (Exception e){
+				txtArea.append("Input was not valid\n");
+				return null;
+			}
+		}
+	}
+	
+	public static void main(String[] args){
+		JFrame frame = new JFrame("Simple database program");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		SimpleDatabasePanel panel = new SimpleDatabasePanel();
+		frame.getContentPane().add(panel);
+		frame.pack();
+		frame.setVisible(true);
+		database.addAtBottom(new Student("alex", 2, 8.0));
+		database.addAtBottom(new Student("becky", 5, 7.0));
+		database.addAtBottom(new Student("catherine", 7, 6));
+		database.addAtBottom(new Student("derrick", 1, 5));
+		database.addAtBottom(new Student("eric", 3, 4));
+		database.addAtBottom(new Student("flaurence", 4, 3));
+		database.addAtBottom(new Student("gary", 6, 2));
+		database.addAtBottom(new Student("harry", 8, 1));
+		
+	}
+}
