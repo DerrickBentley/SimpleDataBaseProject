@@ -1,0 +1,564 @@
+package package1;
+import static org.junit.Assert.*;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+
+public class JUnitTests {
+	
+	/** has preset data within it for testing */
+	static LinkedList<Student> database1;
+	/** starts as empty for testing */
+	static LinkedList<Student> database2;
+	/**is the Student database for the features regarding LL and Studs*/
+	static SimpleDatabase database3;
+	/**is the Student database populated with database1 */
+	static SimpleDatabase database4;
+	
+	@Before
+	public void setUp() throws Exception {
+		database1 = new LinkedList<Student>();
+		
+		database1.addAtBottom(new Student("alex", 2, 8.0));
+		database1.addAtBottom(new Student("becky", 5, 7.0));
+		database1.addAtBottom(new Student("catherine", 7, 6));
+		database1.addAtBottom(new Student("derrick", 1, 5));
+		database1.addAtBottom(new Student("eric", 3, 4));
+		database1.addAtBottom(new Student("flaurence", 4, 3));
+		database1.addAtBottom(new Student("gary", 6, 2));
+		database1.addAtBottom(new Student("harry", 8, 1));
+		
+		database2 = new LinkedList<Student>();
+		
+		database3 = new SimpleDatabase();
+		
+		database4 = new SimpleDatabase(database1);
+	}
+	/**tests default constructor for the name of Student          */
+	@Test
+	public void testStudentConstructor() {
+		Student temp = new Student();
+		assertTrue(temp.getName().equals(""));
+	}
+	/**tests default constructor for the gpa of student             */
+	@Test
+	public void testStudentConstructor1() {
+		Student temp = new Student();
+		assertTrue(temp.getGpa() == -1);
+	}
+	/**tests default constructor for default student gnumber       */
+	@Test
+	public void testStudentConstructor2() {
+		Student temp = new Student();
+		assertTrue(temp.getgNumber() == -1);
+	}
+	/** tests a Students full constructor for name                  */
+	@Test
+	public void testStudentConstructor3() {
+		Student temp = new Student("derrick", 1, 1);
+		assertTrue(temp.getName().equals("derrick"));
+	}
+	/** tests a Students full constructor for gpa */
+	@Test
+	public void testStudentConstructor4() {
+		Student temp = new Student("derrick", 1, 1);
+		assertTrue(temp.getGpa() == 1);
+	}
+	/** tests a Students full constructor for gnumber              */
+	@Test
+	public void testStudentConstructor5() {
+		Student temp = new Student("derrick", 1, 1);
+		assertTrue(temp.getgNumber() == 1);
+	}
+	/** tests two different constructors of equal values            */
+	@Test
+	public void testStudentConstructor6(){
+		Student temp = new Student("derrick", 1, 1);
+		Student derrick = new Student("derrick", 1, 1);
+		assertTrue(temp.equals(derrick));
+	}
+	/** tests adding a student to a populated linked list           */
+	@Test
+	public void testLinkedList0(){
+		Student temp = new Student("alex", 2, 8.0);
+		assertTrue(temp.equals(database1.getTop().getData()));
+	}
+	/** tests adding a student to the bottom of a populated LL      */
+	@Test
+	public void testLinkedList1(){
+		Student temp = new Student("harry", 8, 1);
+		assertTrue(temp.equals(database1.getBottom().getData()));
+	}
+	/** tests adding student top of a populated LL one into it    */
+	@Test
+	public void testLinkedList2(){
+		Student temp = new Student("becky", 5, 7.0);
+		assertTrue(temp.equals(database1.getTop().getNext().getData()));
+	}
+	/**tests adding student one above bot, populated LL           */
+	@Test
+	public void testLinkedList3(){
+		Student temp = new Student("gary", 6, 2);
+		assertTrue(temp.equals(database1.getBottom().
+												getPrev().getData()));
+	}
+	/**tests add before node at top for the top value               */
+	@Test
+	public void testLinkedList4(){
+		Student temp = new Student("spencer", 9, 6.0);
+		database1.addBeforeNode(database1.getTop().getData(), temp);
+		assertTrue(temp.equals(database1.getTop().getData()));
+	}
+	/**tests add before node at top for the previous value          */
+	@Test
+	public void testLinkedList4x1(){
+		Student temp = new Student("spencer", 9, 6.0);
+		Student prevTop = database1.getTop().getData();
+		database1.addBeforeNode(database1.getTop().getData(), temp);
+		assertTrue(prevTop.equals(database1.getTop()
+				                                 .getNext().getData()));
+	}
+	/**tests add After node at top for top value                    */
+	@Test
+	public void testLinkedList5(){
+		Student temp = new Student("spencer", 9, 6.0);
+		database1.addAfterNode(database1.getTop().getData(), temp);
+		assertTrue(temp.equals(database1.getTop().getNext().getData()));
+	}
+	/** tests add After node at top for previous value             */
+	@Test
+	public void testLinkedList5x1(){
+		Student temp = new Student("spencer", 9, 6.0);
+		Student prevTop = database1.getTop().getData();
+		database1.addAfterNode(database1.getTop().getData(),temp);
+		assertTrue(prevTop.equals(database1.getTop().getData()));
+	}
+	/**tests add before node at bottom for the previous bottom value */
+	@Test
+	public void testLinkedList6(){
+		Student temp = new Student("spencer", 9, 6.0);
+		database1.addBeforeNode(database1.getBottom().getData(), temp);
+	assertTrue(temp.equals(database1.getBottom().getPrev().getData()));
+	}
+	/**tests add before node at bottom for the bottom value          */
+	@Test
+	public void testLinkedList6x1(){
+		Student temp = new Student("spencer", 9, 6.0);
+		Student prevBot = database1.getBottom().getData();
+		database1.addBeforeNode(database1.getBottom().getData(), temp);
+		assertTrue(prevBot.equals(database1.getBottom().getData()));
+	}
+	/**tests add After node at bottom for bottom value               */
+	@Test
+	public void testLinkedList7(){
+		Student temp = new Student("spencer", 9, 6.0);
+		database1.addAfterNode(database1.getBottom().getData(), temp);
+		assertTrue(temp.equals(database1.getBottom().getData()));
+	}
+	/**tests for update at top                                       */
+	@Test
+	public void testLinkedList8(){
+		Student temp = new Student("Daniel", 2, 8.0);
+		database4.Update(temp);
+		assertTrue(temp.equals(database4.getDatabase()
+												.getTop().getData()));
+	}
+	/**tests for update at bottom                                    */
+	@Test
+	public void testLinkedList9(){
+		Student temp = new Student("Daniel", 8, 8.0);
+		database4.Update(temp);
+		assertTrue(temp.equals(database4.getDatabase()
+				                              .getBottom().getData()));
+	}
+	/**tests for update at 1 down of top                            */
+	@Test
+	public void testLinkedList10(){
+		Student temp = new Student("Daniel", 5, 8.0);
+		database4.Update(temp);
+		assertTrue(temp.equals(database4.getDatabase()
+				                        .getTop().getNext().getData()));
+	}
+	/**tests for update at 1 above bottom                            */
+	@Test
+	public void testLinkedList11(){
+		Student temp = new Student("Daniel", 6, 8.0);
+		database4.Update(temp);
+		assertTrue(temp.equals(database4.getDatabase()
+				                     .getBottom().getPrev().getData()));
+	}
+	
+	/**Tests deletes top */
+	@Test
+	public void testLinkedList12(){
+		Student prevTop = database1.getTop().getData();
+		database1.deleteNode(prevTop);
+		assertFalse(database1.getTop().getData().equals(prevTop));
+	}
+	
+	/**Tests deletes one after top */
+	@Test
+	public void testLinkedList13(){
+		Student prevTop = database1.getTop().getNext().getData();
+		database1.deleteNode(prevTop);
+	assertFalse(database1.getTop().getNext().getData().equals(prevTop));
+	}
+	
+	/**Tests deletes bottom */
+	@Test
+	public void testLinkedList14(){
+		Student prevBot = database1.getBottom().getData();
+		database1.deleteNode(prevBot);
+		assertFalse(database1.getBottom().getData().equals(prevBot));
+	}
+	
+	/**Tests deletes one above bottom */
+	@Test
+	public void testLinkedList15(){
+		Student prevBot = database1.getBottom().getPrev().getData();
+		database1.deleteNode(prevBot);
+		assertFalse(database1.getBottom().getPrev()
+				                            .getData().equals(prevBot));
+	}
+	
+	/**tests reverse list for top */
+	@Test
+	public void testLinkedList16(){
+		Student temp = database1.getTop().getData();
+		database1.reverseList();
+		assertTrue(temp.equals(database1.getBottom().getData()));
+	}
+	
+	/**tests reverse list for top */
+	@Test
+	public void testLinkedList17(){
+		Student temp = database1.getTop().getData();
+		database1.reverseList();
+		assertFalse(temp.equals(database1.getTop().getData()));
+	}
+	
+	/** tests reverse list for bottom */
+	@Test
+	public void testLinkedList18(){
+		Student temp = database1.getBottom().getData();
+		database1.reverseList();
+		assertTrue(database1.getTop().getData().equals(temp));
+	}
+	
+	/** tests reverse list for bottom */
+	@Test
+	public void testLinkedList19(){
+		Student temp = database1.getBottom().getData();
+		database1.reverseList();
+		assertFalse(database1.getBottom().getData().equals(temp));
+	}
+	
+	/**tests reverse list 1 below top*/
+	@Test 
+	public void testLinkedList20(){
+		Student temp = database1.getTop().getNext().getData();
+		database1.reverseList();
+	assertTrue(temp.equals(database1.getBottom().getPrev().getData()));
+	}
+	
+	/**tests reverse list 1 below top*/
+	@Test 
+	public void testLinkedList21(){
+		Student temp = database1.getTop().getNext().getData();
+		database1.reverseList();
+		assertFalse(temp.equals(database1.getTop().getNext().getData()));
+	}
+	
+	/**tests reverse list 1 above bottom */
+	@Test
+	public void testLinkedList22(){
+		Student temp = database1.getBottom().getPrev().getData();
+		database1.reverseList();
+		assertTrue(temp.equals(database1.getTop().getNext().getData()));
+	}
+	
+	/**tests reverse list 1 above bottom */
+	@Test
+	public void testLinkedList23(){
+		Student temp = database1.getBottom().getPrev().getData();
+		database1.reverseList();
+	assertFalse(temp.equals(database1.getBottom().getPrev().getData()));
+	}
+	
+	/**tests saving database for top */
+	@Test
+	public void testLinkedList24(){
+		String filename = "pelase";
+		database4.saveDatabase(filename);
+		SimpleDatabase database5 = new SimpleDatabase();
+		database5.loadDatabase(filename);
+		assertTrue(database5.getDatabase().getTop().getData()
+				   .equals(database4.getDatabase().getTop().getData()));
+	}
+	
+	/**tests saving database for bottom */
+	@Test
+	public void testLinkedList25(){
+		String filename = "pelase";
+		database4.saveDatabase(filename);
+		SimpleDatabase database5 = new SimpleDatabase();
+		database5.loadDatabase(filename);
+		assertTrue(database5.getDatabase().getBottom().getData().equals
+				      (database4.getDatabase().getBottom().getData()));
+	}
+	
+	/**tests saving database for top one down */
+	@Test
+	public void testLinkedList26(){
+		String filename = "pelase";
+		database4.saveDatabase(filename);
+		SimpleDatabase database5 = new SimpleDatabase();
+		database5.loadDatabase(filename);
+		assertTrue(database5.getDatabase().getTop().getNext().getData()
+				   .equals(database4.getDatabase().getTop().getNext()
+						                                   .getData()));
+	}
+	
+	/**tests saving database for bottom one above */
+	@Test
+	public void testLinkedList27(){
+		String filename = "pelase";
+		database4.saveDatabase(filename);
+		SimpleDatabase database5 = new SimpleDatabase();
+		database5.loadDatabase(filename);
+		assertTrue(database5.getDatabase().getBottom().getPrev().getData
+				().equals(database4.getDatabase().getBottom().getPrev()
+						                                   .getData()));
+	}
+	
+	/**tests the size counter*/
+	@Test
+	public void testLinkedList28(){
+		assertTrue(database2.getSize() == 0);
+	}
+	
+	/**tests the size counter*/
+	@Test
+	public void testLinkedList29(){
+		assertTrue(database1.getSize() == 8);
+	}
+	
+	/**tests the size counter*/
+	@Test
+	public void testLinkedList30(){
+		assertTrue(database4.getDatabase().getSize() == 8);
+	}
+	
+	/**tests the size counter*/
+	@Test
+	public void testLinkedList31(){
+		assertTrue(database3.getDatabase().getSize() == 0);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList32(){
+		database2.addAtTop(new Student());
+		assertTrue(database2.getSize() == 1);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList33(){
+		database1.addAtTop(new Student());
+		assertTrue(database1.getSize() == 9);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList34(){
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		assertTrue(database2.getSize() == 5);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList35(){
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		assertTrue(database1.getSize() == 13);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList36(){
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.deleteDuplicates();
+		assertTrue(database2.getSize() == 1);
+	}
+	
+	/**tests the size counter while adding and deleting duplicates */
+	@Test
+	public void testLinkedList37(){
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.deleteDuplicates();
+		assertTrue(database1.getSize() == 9);
+	}
+	
+	/**tests the size duplicate while adding and deleting duplicates */
+	@Test
+	public void testLinkedList38(){
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		assertTrue(database2.deleteDuplicates() == 4);
+	}
+	
+	/**tests the duplicate counter while adding and deleting duplicates*/
+	@Test
+	public void testLinkedList39(){
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		assertTrue(database1.deleteDuplicates() == 4);
+	}
+	
+	/**tests the size duplicate while adding and deleting duplicates */
+	@Test
+	public void testLinkedList40(){
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.addAtTop(new Student());
+		database2.deleteDuplicates();
+		assertTrue(database2.deleteDuplicates() == 0);
+	}
+	
+	/**test the duplicate counter while adding and deleting duplicates*/
+	@Test
+	public void testLinkedList41(){
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.addAtTop(new Student());
+		database1.deleteDuplicates();
+		assertTrue(database1.deleteDuplicates() == 0);
+	}
+	
+	/**tests the sorting by gNumber at top */
+	@Test
+	public void testLinkedList42(){
+		database4.sort(2);
+		assertTrue(database4.getDatabase().getTop().getData()
+				                 .equals(new Student("derrick", 1, 5)));
+	}
+	
+	/**tests the sorting by gNumber at bottom*/
+	@Test
+	public void testLinkedList43(){
+		database4.sort(2);
+		assertTrue(database4.getDatabase().getBottom().getData()
+				                 .equals(new Student("harry", 8, 1)));
+	}
+	
+	/**tests the sorting by gNumber at top */
+	@Test
+	public void testLinkedList44(){
+		database4.sort(2);
+		assertTrue(database4.getDatabase().getTop().getNext().getData()
+				                 .equals(new Student("alex", 2, 8.0)));
+	}
+	
+	/**tests the sorting by gNumber at bottom*/
+	@Test
+	public void testLinkedList45(){
+		database4.sort(2);
+	  assertTrue(database4.getDatabase().getBottom().getPrev().getData()
+				               .equals(new Student("catherine", 7, 6)));
+	}
+	
+	/**tests the sorting by gpa at top */
+	@Test
+	public void testLinkedList46(){
+		database4.sort(3);
+		assertTrue(database4.getDatabase().getTop().getData()
+				                 .equals(new Student("harry", 8, 1)));
+	}
+	
+	/**tests the sorting by gpa at bottom*/
+	@Test
+	public void testLinkedList47(){
+		database4.sort(3);
+		assertTrue(database4.getDatabase().getBottom().getData()
+				                 .equals(new Student("alex", 2, 8.0)));
+	}
+	
+	/**tests the sorting by gpa at top */
+	@Test
+	public void testLinkedList48(){
+		database4.sort(3);
+		assertTrue(database4.getDatabase().getTop().getNext().getData()
+				                 .equals(new Student("gary", 6, 2)));
+	}
+	
+	/**tests the sorting by gpa at bottom*/
+	@Test
+	public void testLinkedList49(){
+		database4.sort(3);
+	  assertTrue(database4.getDatabase().getBottom().getPrev().getData()
+				               .equals(new Student("becky", 5, 7.0)));
+	}
+	
+	/**tests the sorting by name at top */
+	@Test
+	public void testLinkedList50(){
+		database4.sort(3);
+		database4.sort(1);
+		assertTrue(database4.getDatabase().getTop().getData()
+				                 .equals(new Student("alex", 2, 8.0)));
+	}
+	
+	/**tests the sorting by name at bottom*/
+	@Test
+	public void testLinkedList51(){
+		database4.sort(3);
+		database4.sort(1);
+		assertTrue(database4.getDatabase().getBottom().getData()
+				                 .equals(new Student("harry", 8, 1)));
+	}
+	
+	/**tests the sorting by name at top */
+	@Test
+	public void testLinkedList52(){database4.sort(1);
+		database4.sort(3);
+		database4.sort(1);
+		assertTrue(database4.getDatabase().getTop().getNext().getData()
+				                 .equals(new Student("becky", 5, 7.0)));
+	}
+	
+	/**tests the sorting by name at bottom*/
+	@Test
+	public void testLinkedList53(){
+		database4.sort(3);
+		database4.sort(1);
+	  assertTrue(database4.getDatabase().getBottom().getPrev().getData()
+				               .equals(new Student("gary", 6, 2)));
+	}
+}
